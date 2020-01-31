@@ -24,6 +24,8 @@ function guessTheNumber() {
                             guessedNumber = Math.ceil(Math.random() * 100);
                             attempt = 10;
                             gameCycle();
+                        } else {
+                            alert("До свидания!");
                         }
                     }
                 } else if (guessedNumber === answer) {
@@ -32,6 +34,8 @@ function guessTheNumber() {
                         guessedNumber = Math.ceil(Math.random() * 100);
                         attempt = 10;
                         gameCycle();
+                    } else {
+                        alert("До свидания!");
                     }
                 } else {
                     --attempt;
@@ -44,6 +48,8 @@ function guessTheNumber() {
                             guessedNumber = Math.ceil(Math.random() * 100);
                             attempt = 10;
                             gameCycle();
+                        } else {
+                            alert("До свидания!");
                         }
                     }
                 }
@@ -51,7 +57,10 @@ function guessTheNumber() {
                 alert("Введи число!");
                 gameCycle();
             }
+        } else {
+            alert("До свидания!");
         }
+
     }
     gameCycle();
 }
