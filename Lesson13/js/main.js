@@ -5,22 +5,24 @@ let buttonHeader = document.getElementsByClassName('header-button')[0],
     buttonComplete = document.querySelectorAll('.todo-complete'),
     ul = document.querySelectorAll('.todo'),
     flag = false,
-    arrayToDo = [],
-    arrayCompleted = [],
-    cloneNodeToDo = ul[0].childNodes[1].cloneNode(true),
+    memory = {
+        arrayToDo: [],
+        arrayCompleted: [],
+    }
+cloneNodeToDo = ul[0].childNodes[1].cloneNode(true),
     cloneNodeComplete = ul[1].childNodes[1].cloneNode(true);
 
-localStorage.arrayToDo ? arrayToDo = localStorage.getItem("arrayToDo").split('; ') : arrayToDo = [];
-localStorage.arrayCompleted ? arrayCompleted = localStorage.getItem("arrayCompleted").split('; ') : arrayCompleted = [];
-
+if (localStorage.memory) {
+    memory = JSON.parse(localStorage.getItem("memory"));
+};
 
 const addLocalStorageToDo = function(elem) {
-    arrayToDo.push(elem);
-    localStorage.setItem("arrayToDo", arrayToDo.join('; '));
+    memory.arrayToDo.push(elem);
+    localStorage.setItem('memory', JSON.stringify(memory));
 }
 const addLocalStorageCompleted = function(elem) {
-    arrayCompleted.push(elem);
-    localStorage.setItem("arrayCompleted", arrayCompleted.join('; '))
+    memory.arrayCompleted.push(elem);
+    localStorage.setItem('memory', JSON.stringify(memory));
 }
 
 // 2) Удаление дел на кнопку КОРЗИНА
@@ -29,14 +31,13 @@ const addListenButtonRemove = function() {
 };
 const eventButtonRemove = function(e) {
     let text = e.target.parentNode.parentNode.textContent.split("\n")[0];
-    if (arrayToDo.includes(text)) {
-        arrayToDo.splice(arrayToDo.indexOf(text), 1);
-        localStorage.setItem("arrayToDo", arrayToDo.join('; '));
+    if (memory.arrayToDo.includes(text)) {
+        memory.arrayToDo.splice(memory.arrayToDo.indexOf(text), 1);
     };
-    if (arrayCompleted.includes(text)) {
-        arrayCompleted.splice(arrayCompleted.indexOf(text), 1);
-        localStorage.setItem("arrayCompleted", arrayCompleted.join('; '));
+    if (memory.arrayCompleted.includes(text)) {
+        memory.arrayCompleted.splice(memory.arrayCompleted.indexOf(text), 1);
     };
+    localStorage.setItem('memory', JSON.stringify(memory));
     e.target.parentNode.parentNode.remove();
 };
 
@@ -49,13 +50,13 @@ const eventButtonComplete = function(e) {
     let innerText = e.target.parentNode.parentNode.textContent.split("\n")[0];
     if (e.target.parentNode.parentNode.parentNode.getAttribute("class") === "todo") {
         ul[1].append(e.target.parentNode.parentNode);
-        arrayToDo.splice(arrayToDo.indexOf(innerText), 1);
-        localStorage.setItem("arrayToDo", arrayToDo.join('; '));
+        memory.arrayToDo.splice(memory.arrayToDo.indexOf(innerText), 1);
+        localStorage.setItem('memory', JSON.stringify(memory));
         addLocalStorageCompleted(innerText);
     } else {
         ul[0].append(e.target.parentNode.parentNode);
-        arrayCompleted.splice(arrayCompleted.indexOf(innerText), 1);
-        localStorage.setItem("arrayCompleted", arrayCompleted.join('; '));
+        memory.arrayCompleted.splice(memory.arrayCompleted.indexOf(innerText), 1);
+        localStorage.setItem('memory', JSON.stringify(memory));
         addLocalStorageToDo(innerText);
     };
 };
@@ -66,7 +67,7 @@ ul.forEach(i => i.removeChild(i.children[0]));
 buttonHeader.disabled = true;
 
 // Из localStorage чтение и добавление элементов
-arrayToDo.forEach(item => {
+memory.arrayToDo.forEach(item => {
     let clones = cloneNodeToDo.cloneNode(true);
     clones.innerHTML = item + clones.innerHTML.replace(/^[^<]*/g, "");
     ul[0].insertAdjacentElement('beforeend', clones);
@@ -75,7 +76,7 @@ arrayToDo.forEach(item => {
     addListenButtonRemove();
     addListenButtonComplete();
 });
-arrayCompleted.forEach(item => {
+memory.arrayCompleted.forEach(item => {
     let clones = cloneNodeToDo.cloneNode(true);
     clones.innerHTML = item + clones.innerHTML.replace(/^[^<]*/g, "");
     ul[1].insertAdjacentElement('beforeend', clones);
