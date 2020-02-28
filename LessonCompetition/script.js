@@ -162,9 +162,11 @@ document.addEventListener('DOMContentLoaded', () => {
         request.setRequestHeader('Content-type', 'application/json');
         request.send();
         request.addEventListener('readystatechange', () => {
-            if (request.readyState === 4 && request.status === 200) {
+            if (request.readyState === 4 && request.status === 201) {
                 const data = JSON.parse(request.responseText);
                 callback(data);
+            } else if (request.readyState === 4) {
+                console.warn('Запрос к серверу пришёл с ошибкой');
             };
         });
     };
