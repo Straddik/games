@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Создание стилей для кнопок при наведении
     style.textContent = `
     #left:hover, #right:hover{
-        opacity: 0.8; 
+        opacity: 0.9; 
         background-color: #CCCCCC ;
         transition: All .2s; 
     }
@@ -109,8 +109,8 @@ document.addEventListener('DOMContentLoaded', () => {
         height: 24px;
         background-size: 24px;
         background-image: url("./images/right-arrow.svg");
-        background-color: #DDDEEE ;
-        opacity: 0.4; 
+        background-color: #DDDDDD ;
+        opacity: 0.7; 
         border-radius: 10px;
     }
     #left {
@@ -119,8 +119,8 @@ document.addEventListener('DOMContentLoaded', () => {
         height: 24px;
         background-size: 24px;
         background-image: url("./images/left-arrow.svg");
-        background-color: #DDDEEE ;
-        opacity: 0.3; 
+        background-color: #DDDDDD ;
+        opacity: 0.7; 
         border-radius: 10px;
     }
     `;
@@ -159,13 +159,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //Функия создания options у select 
     const addOption = (selected) => {
-        divWrapper.style.display = 'flex';
         //Очищение select перед выбором;
         let { length } = select.options;
         for (let i = 0; i < length; i++) {
             select.remove(select.options[i]);
         };
         // Поиск по фильму
+        divWrapper.style.display = 'flex';
         data.forEach(item => {
             if (item.movies && item.movies.some(film => film === selected)) {
                 const optionAdd = document.createElement('option');
@@ -248,7 +248,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.tagName === 'A') {
             e.target.id === 'left' ? moveCardsLeft() : moveCardsLRight();
         }
-    })
+    });
+
+    // Обработчик событий при выборе фильма(выполняется один раз и удаляется), чтобы ушла опция "Выберите фильм"
+    selectFilm.addEventListener('change', () => {
+        selectFilm.remove(select.options[0]);
+    }, { once: true });
 
     //Обработчики событий на selects
     selectFilm.addEventListener('change', (event) => {
