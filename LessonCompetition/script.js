@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
         divWrapper.style.display = 'flex';
         //Очищение select перед выбором;
         let { length } = select.options;
-        for (let i = 1; i < length; i++) {
+        for (let i = 0; i < length; i++) {
             select.remove(select.options[i]);
         };
         // Поиск по фильму
@@ -174,8 +174,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 select.appendChild(optionAdd);
             };
         });
-        addInfoAfterSelect(select.options[1].value);
-        divWrapper.className = select.options[1].value;
+        addInfoAfterSelect(select.options[0].value);
+        divWrapper.className = select.options[0].value;
+        select.selectedIndex = 0;
     };
 
     //Функция отображения информации после выбора всех selectов
@@ -223,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let index = [...select.options].map(item => item.value).indexOf(divWrapper.className);
         index++;
         if (index > ([...select.options].length - 1)) {
-            index = 1;
+            index = 0;
         };
         select.selectedIndex = index;
         addInfoAfterSelect(select.options[select.selectedIndex].value);
@@ -232,10 +233,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const moveCardsLeft = () => {
         let index = [...select.options].map(item => item.value).indexOf(divWrapper.className);
         index--;
-        if (index === 0) {
+        if (index === -1) {
             index = [...select.options].length - 1;
         };
-        console.log(index);
         select.selectedIndex = index;
         addInfoAfterSelect(select.options[select.selectedIndex].value);
     };
