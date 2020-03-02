@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    min-width: 120px;
+    min-width: 60px;
     max-width: 150px;
     border:  2px solid black;
     `;
@@ -80,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     divWrapper.style.cssText = `
     width: 30%;
+    min-width: 270px;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -88,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //Настройка select и кнопок  перед началом
     option.value = '0';
-    option.innerHTML = 'Выберите героя';
+    option.innerHTML = 'Сначала выберите фильм';
     option.selected = true;
     optionFilm.value = '0';
     optionFilm.innerHTML = 'Выберите фильм';
@@ -100,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
     style.textContent = `
     #left:hover, #right:hover{
         opacity: 0.9; 
-        background-color: #CCCCCC ;
+        background-color: #AAAAAA ;
         transition: All .2s; 
     }
     #right {
@@ -109,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         height: 24px;
         background-size: 24px;
         background-image: url("./images/right-arrow.svg");
-        background-color: #DDDDDD ;
+        background-color: #BBBBBB ;
         opacity: 0.7; 
         border-radius: 10px;
     }
@@ -119,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         height: 24px;
         background-size: 24px;
         background-image: url("./images/left-arrow.svg");
-        background-color: #DDDDDD ;
+        background-color: #BBBBBB ;
         opacity: 0.7; 
         border-radius: 10px;
     }
