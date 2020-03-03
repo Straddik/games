@@ -49,6 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
 
     form.style.cssText = `
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin: 10px 10px;
     font-size: 12px;
     `;
@@ -88,9 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
 
     //Настройка select и кнопок  перед началом
-    option.value = '0';
-    option.innerHTML = 'Сначала выберите фильм';
-    option.selected = true;
+    select.style.display = 'none';
     optionFilm.value = '0';
     optionFilm.innerHTML = 'Выберите фильм';
     optionFilm.selected = true;
@@ -254,6 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Обработчик событий при выборе фильма(выполняется один раз и удаляется), чтобы ушла опция "Выберите фильм"
     selectFilm.addEventListener('change', () => {
         selectFilm.remove(select.options[0]);
+        select.style.display = 'block';
     }, { once: true });
 
     //Обработчики событий на selects
