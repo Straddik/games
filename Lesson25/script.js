@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const request = new XMLHttpRequest();
             request.open('GET', url);
             request.setRequestHeader('Content-type', 'application/json');
-            request.send();
             request.addEventListener('readystatechange', () => {
                 if (request.readyState !== 4) return;
                 if (request.readyState === 4 && request.status === 200) {
@@ -36,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     reject(request.status);
                 }
             });
+            request.send();
         })
 
     }
