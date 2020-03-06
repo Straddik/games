@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
         main = document.querySelector('.main'),
         form = main.childNodes[1],
         urlAdress = './db_cities.json';
-    let idAni, idAniList;
+    let idAni, idAniList, local;
 
     //Очистка 
     listDefault.style.display = 'none';
@@ -36,9 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     main.appendChild(img);
 
-    const loadInfo = (data) => {
+    const loadInfo = (data, local) => {
         //Создание списка по умолчанию
-        data['RU'].forEach(item => {
+        data.forEach(item => {
             const node = countryBlock.cloneNode(true);
             node.childNodes[1].childNodes[1].innerHTML = item["country"];
             node.childNodes[1].childNodes[3].innerHTML = item["count"];
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         //Создание списка всех городов для ListSelect
         const formlistSelect = (countryText) => {
-            data['RU'].forEach(item => {
+            data.forEach(item => {
                 if (item["country"] === countryText) {
                     const node = countryBlock.cloneNode(true);
                     node.childNodes[1].childNodes[1].innerHTML = item["country"];
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         //Вывод городов для listAutoComplete
         const addToListAutoComplete = (reg) => {
             const regEx = new RegExp(`^${reg}`, "i");
-            data['RU'].forEach(item => {
+            data.forEach(item => {
                 return item["cities"].forEach(city => {
                     if (regEx.test(city["name"])) {
                         const node = countryBlock.cloneNode(true);
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     };
                 });
             });
-            if (!data['RU'].some(item => item["cities"].some(city => regEx.test(city["name"])))) {
+            if (!data.some(item => item["cities"].some(city => regEx.test(city["name"])))) {
                 const node = countryBlock.cloneNode(true);
                 const child = node.childNodes[5].cloneNode(true);
                 [...node.childNodes].forEach(val => node.removeChild(val));
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         //Активация кнопки и установка ссылки для неё
         const setLinkToButton = (text) => {
-            data['RU'].forEach(item => {
+            data.forEach(item => {
                 item["cities"].some(city => {
                     if (city['name'] === text) {
                         button.setAttribute('href', city['link']);
@@ -116,6 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const animateList1 = (list1, list2, step, side) => {
             list1.style.transform = `translateX(${step-100*side}%)`;
             if (step === 10) {
+                list1.style.transform = 'translateX(0%)';
                 list1.style.display = 'none';
                 cancelAnimationFrame(idAniList);
                 list2.style.transform = 'translateX(100%)';
@@ -129,11 +130,11 @@ document.addEventListener('DOMContentLoaded', () => {
             list.style.transform = `translateX(${step}%)`;
             if (!step) {
                 cancelAnimationFrame(idAniList);
+                list.style.transform = 'translateX(0%)';
                 if (list === listDefault) {
                     [...listSelect.childNodes[1].childNodes].forEach(val => listSelect.childNodes[1].removeChild(val));
                 };
             } else {
-                console.log(step);
                 idAniList = requestAnimationFrame(animateList2.bind(null, list, step - side * 3, side));
             }
         };
@@ -142,15 +143,23 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.addEventListener('click', (e) => {
             if (e.target === input) {
                 listDefault.style.display = 'block';
+                listSelect.style.display = 'none';
             } else if (e.target.closest('.dropdown-lists__list--default') && e.target.closest('.dropdown-lists__total-line')) {
                 label.style.display = 'none';
                 [...listSelect.childNodes[1].childNodes].forEach(val => listSelect.childNodes[1].removeChild(val));
-                formlistSelect(e.target.innerHTML);
                 animateList1(listDefault, listSelect, 94, 1);
-                input.value = e.target.innerHTML;
+                if (e.target.classList.contains('dropdown-lists__count')) {
+                    formlistSelect(e.target.previousSibling.innerHTML);
+                    input.value = e.target.previousSibling.innerHTML;
+                } else if (e.target.classList.contains('dropdown-lists__total-line')) {
+                    formlistSelect(e.target.childNodes[1].innerHTML);
+                    input.value = e.target.childNodes[1].innerHTML;
+                } else {
+                    formlistSelect(e.target.innerHTML);
+                    input.value = e.target.innerHTML;
+                };
                 buttonClose.style.display = 'block';
             } else if (e.target.closest('.dropdown-lists__total-line') && e.target.closest('.dropdown-lists__list--select')) {
-
                 animateList1(listSelect, listDefault, -94, -1);
             } else if (e.target === buttonClose) {
                 button.removeAttribute('href');
@@ -167,6 +176,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 button.disabled = false;
                 setLinkToButton(input.value);
                 listAutoComplete.style.display = 'none';
+                listSelect.style.display = 'none';
+                listDefault.style.display = 'none';
                 label.style.display = 'none';
             } else {
                 listDefault.style.display = 'none';
@@ -202,6 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
             headers: {
                 'Content-Type': 'application/json'
             },
+            // body: key,
         })
     };
     //Анимация для спинера
@@ -211,24 +223,62 @@ document.addEventListener('DOMContentLoaded', () => {
         idAni = requestAnimationFrame(animateSpiner.bind(null, angle + 1));
     };
     animateSpiner(1);
-
     //Имитация загрузки 1 секунд
+
+
+    //Установка cookies
+    const setCookie = function(key, value, year, month, day) {
+        let cookieString = `${encodeURI(key)}=${encodeURI(value)}`;
+        if (year) {
+            const expires = new Date(year, month, day);
+            cookieString += `;expires=${expires.toUTCString()}`;
+        }
+        document.cookie = cookieString;
+    };
+    //Получение cookies
+    function getCookie(name) {
+        let matches = document.cookie.match(new RegExp(
+            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    };
+
+
     setTimeout(() => {
-        postData(urlAdress)
-            .then((response) => {
-                if (response.status !== 200) {
-                    throw new Error('status nerwork not 200');
-                }
-                return response.json();
-            })
-            .then((info) => {
-                cancelAnimationFrame(idAni);
-                form.style.display = 'block';
-                img.style.display = 'none';
-                loadInfo(info);
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+        if (!getCookie('local')) {
+            local = prompt('Введите локаль(RU, EN или DE):');
+            while (local.trim().toUpperCase() !== 'RU' && local.trim().toUpperCase() !== 'DE' && local.trim().toUpperCase() !== 'EN') {
+                local = prompt('Вы ошиблись. Введите локаль(RU, EN или DE)');
+            };
+            setCookie('local', local, 2021, 0, 1);
+        } else {
+            local = getCookie('local');
+        };
+        if (!localStorage.getItem('db_cities')) {
+            postData(urlAdress, local)
+                .then((response) => {
+                    if (response.status !== 200) {
+                        throw new Error('status nerwork not 200');
+                    }
+                    return response.json();
+                })
+                .then((info) => {
+                    cancelAnimationFrame(idAni);
+                    form.style.display = 'block';
+                    img.style.display = 'none';
+                    //Сразу массив сортируется, чтобы первым выпадала нужная страна при выборанной локали)
+                    info[local].sort(a => local === 'DE' ? a["country"] === "Deutschland" ? -1 : 1 : local === 'EN' ? a["country"] === "United Kingdom" ? -1 : 1 : local === 'RU' ? a["country"] === "Россия" ? -1 : 1 : 0);
+                    localStorage.setItem('db_cities', JSON.stringify(info[local]));
+                    loadInfo(info[local], local);
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        } else {
+            cancelAnimationFrame(idAni);
+            form.style.display = 'block';
+            img.style.display = 'none';
+            loadInfo(JSON.parse(localStorage.getItem('db_cities')), local);
+        };
     }, 1000)
 });
