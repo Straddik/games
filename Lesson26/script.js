@@ -51,7 +51,7 @@ window.addEventListener('DOMContentLoaded', () => {
     form.appendChild(translation);
     document.body.appendChild(form);
 
-    // Запрос на яндекс отправка и получение
+    // Запрос на яндекс получение перевода
     const url = 'https://translate.yandex.net/api/v1.5/tr.json/translate',
         key = 'trnsl.1.1.20200303T055229Z.8aae2bb08b34cfe0.f7b2fc01d24e52a6b8588788c87f32260cc1c711';
     const sendingRequist = (text) => {
