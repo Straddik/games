@@ -207,23 +207,22 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     //Запрос на сервер
-    const postData = (url) => {
+    const postData = (url, loc) => {
         return fetch(url, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             },
-            // body: key,
         })
     };
-    //Анимация для спинера
 
+
+    //Анимация для спинера
     const animateSpiner = (angle) => {
         img.style.transform = `rotate(${angle}deg)`;
         idAni = requestAnimationFrame(animateSpiner.bind(null, angle + 1));
     };
     animateSpiner(1);
-    //Имитация загрузки 1 секунд
 
 
     //Установка cookies
@@ -235,6 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         document.cookie = cookieString;
     };
+
     //Получение cookies
     function getCookie(name) {
         let matches = document.cookie.match(new RegExp(
@@ -243,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return matches ? decodeURIComponent(matches[1]) : undefined;
     };
 
-
+    //Имитация загрузки 1 секунд
     setTimeout(() => {
         if (!getCookie('local')) {
             local = prompt('Введите локаль(RU, EN или DE):');
