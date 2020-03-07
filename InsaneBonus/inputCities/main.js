@@ -23,6 +23,23 @@ document.addEventListener('DOMContentLoaded', () => {
     listSelect.style.display = 'none';
     listAutoComplete.style.display = 'none';
     button.removeAttribute('href');
+    //Чтобы кнопка была не активной(т.к. она создана через aтрибут а)
+    const buttonHoverDisactive = (e) => {
+        e.preventDefault();
+        button.style.cssText = `
+        background: #00416A;
+        `;
+    };
+    const buttonHoverActive = (e) => {
+        e.preventDefault();
+        button.style.cssText = `
+        background: #00609d;
+        -webkit-transition: all .5s ease;
+        transition: all .5s ease;
+        `;
+    };
+    button.addEventListener('mouseover', buttonHoverDisactive);
+    button.addEventListener('mouseout', buttonHoverDisactive);
     form.style.display = 'none';
     input.value = '';
 
@@ -104,6 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
             data.forEach(item => {
                 item["cities"].some(city => {
                     if (city['name'] === text) {
+                        button.removeEventListener('mouseover', buttonHoverDisactive);
+                        button.addEventListener('mouseover', buttonHoverActive);
                         button.setAttribute('href', city['link']);
                         return true;
                     } else {
@@ -162,6 +181,8 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (e.target.closest('.dropdown-lists__total-line') && e.target.closest('.dropdown-lists__list--select')) {
                 animateList1(listSelect, listDefault, -94, -1);
             } else if (e.target === buttonClose) {
+                button.removeEventListener('mouseover', buttonHoverActive);
+                button.addEventListener('mouseover', buttonHoverDisactive);
                 button.removeAttribute('href');
                 listDefault.style.display = 'none';
                 listSelect.style.display = 'none';
