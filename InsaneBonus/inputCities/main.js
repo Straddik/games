@@ -12,7 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
         countryBlock = listDefault.childNodes[1].childNodes[1],
         main = document.querySelector('.main'),
         form = main.childNodes[1],
-        urlAdress = './db_cities.json';
+        urlAdress = 'http://localhost:3000';
+    // urlAdress = './db_cities.json';
     let idAni, idAniList, local;
 
     //Очистка 
@@ -229,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //Запрос на сервер
     const postData = (url, loc) => {
-        return fetch(url, {
+        return fetch(`${url}/${loc}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -288,9 +289,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     form.style.display = 'block';
                     img.style.display = 'none';
                     //Сразу массив сортируется, чтобы первым выпадала нужная страна при выборанной локали)
-                    info[local].sort(a => local === 'DE' ? a["country"] === "Deutschland" ? -1 : 1 : local === 'EN' ? a["country"] === "United Kingdom" ? -1 : 1 : local === 'RU' ? a["country"] === "Россия" ? -1 : 1 : 0);
-                    localStorage.setItem('db_cities', JSON.stringify(info[local]));
-                    loadInfo(info[local], local);
+                    info.sort(a => local === 'DE' ? a["country"] === "Deutschland" ? -1 : 1 : local === 'EN' ? a["country"] === "United Kingdom" ? -1 : 1 : local === 'RU' ? a["country"] === "Россия" ? -1 : 1 : 0);
+                    localStorage.setItem('db_cities', JSON.stringify(info));
+                    loadInfo(info, local);
                 })
                 .catch((error) => {
                     console.log(error);
